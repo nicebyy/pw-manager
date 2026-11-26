@@ -1,0 +1,9 @@
+node_modules/
+dist/
+dist-electron/
+release/
+*.tsbuildinfo
+.agents/worktrees/
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,111 @@
+export const ko = {
+  appName: 'pw-manager',
+  appSubtitle: '암호화된 다단계 트리 비밀번호 & Key-Value 금고',
+  loading: '금고 상태를 확인하는 중...',
+
+  // Setup View
+  setupTitle: '마스터 비밀번호 설정',
+  setupDescription:
+    '모든 데이터는 입력한 마스터 비밀번호를 시드로 사용하여 AES-256-GCM 및 scrypt로 강력하게 암호화됩니다.',
+  masterPasswordLabel: '마스터 비밀번호',
+  masterPasswordPlaceholder: '최소 8자 이상의 강력한 비밀번호',
+  confirmPasswordLabel: '마스터 비밀번호 확인',
+  confirmPasswordPlaceholder: '비밀번호를 다시 입력하세요',
+  setupButton: '암호화 금고 생성',
+  passwordMismatchError: '비밀번호가 일치하지 않습니다.',
+  passwordTooShortError: '마스터 비밀번호는 최소 {min}자 이상이어야 합니다.',
+
+  // Recovery Phrase Modal (First-time setup)
+  recoveryIssuedTitle: '복구 문구를 반드시 안전한 곳에 보관하세요',
+  recoveryIssuedWarning:
+    '마스터 비밀번호를 분실했을 때 데이터를 복구할 수 있는 유일한 수단입니다. 이 복구 문구까지 잃어버리면 내부 데이터는 영영 복호화할 수 없습니다.',
+  recoveryPhraseLabel: '12단어 복구 문구',
+  copyRecoveryPhrase: '복구 문구 복사',
+  copiedToast: '클립보드에 복사되었습니다',
+  recoveryConfirmCheckbox: '복구 문구를 안전한 오프라인 장소에 별도로 기록·보관했음을 확인합니다.',
+  recoveryContinueButton: '확인 완료, 금고 시작하기',
+
+  // Login View
+  loginTitle: '금고 잠금 해제',
+  loginDescription: '저장된 트리 및 Key-Value 데이터를 확인하려면 마스터 비밀번호를 입력하세요.',
+  unlockButton: '잠금 해제',
+  unlockFailedError: '비밀번호가 올바르지 않거나 데이터가 손상되었습니다.',
+  forgotPasswordLink: '비밀번호를 잊으셨나요? 복구 문구로 복구하기',
+
+  // Recovery View
+  recoveryTitle: '복구 문구로 금고 복구',
+  recoveryDescription:
+    '최초 설정 시 발급받은 12단어 복구 문구를 입력하고 새 마스터 비밀번호를 설정하세요.',
+  recoveryInputLabel: '복구 문구 (12단어)',
+  recoveryInputPlaceholder: '예: acorn agent agile ...',
+  newMasterPasswordLabel: '새 마스터 비밀번호',
+  regeneratePhraseCheckbox: '복구 후 새 복구 문구 재발급',
+  recoverButton: '금고 복구 및 비밀번호 재설정',
+  backToLogin: '로그인 화면으로 돌아가기',
+  recoveryFailedError: '복구 문구가 올바르지 않습니다. 단어를 다시 확인해주세요.',
+
+  // Main Vault Workspace
+  searchPlaceholder: '제목, 설명, Key 검색...',
+  addRootNode: '새 최상위 항목',
+  addChildNode: '하위 항목 추가',
+  lockVault: '금고 잠금',
+  settings: '설정',
+  emptyTreeTitle: '등록된 항목이 없습니다',
+  emptyTreeDescription: '좌측 상단의 + 버튼을 눌러 첫 번째 폴더나 서비스 계정을 추가하세요.',
+  selectNodePrompt: '왼쪽 트리에서 항목을 선택하거나 새 항목을 만들어 주세요.',
+  statsSummary: '항목 {nodes}개 · Key-Value {pairs}개',
+
+  // Node Detail
+  titleLabel: '제목 / 서비스명',
+  titlePlaceholder: '예: GitHub, Discord, 회사 서버',
+  descriptionLabel: '메모 / 설명',
+  descriptionPlaceholder: '계정 용도나 참고 메모를 입력하세요',
+  imageSectionTitle: '직관적 식별 이미지 / 아이콘',
+  uploadImageButton: '이미지 업로드',
+  removeImageButton: '이미지 제거',
+  presetIconsLabel: '기본 아이콘 프리셋',
+  imageTooLargeError: '이미지 크기가 너무 큽니다. 더 작은 이미지를 선택하세요.',
+  pairsSectionTitle: 'Key - Value 쌍',
+  addPairButton: 'Key-Value 추가',
+  keyPlaceholder: 'Key (예: ID, Password, Token)',
+  valuePlaceholder: 'Value',
+  secretToggleTooltip: '비밀값 마스킹 전환',
+  revealValueTooltip: '값 보기/숨기기',
+  copyValueTooltip: '복사 (30초 후 클립보드 자동 삭제)',
+  generatePasswordTooltip: '강력한 랜덤 비밀번호 생성',
+  deletePairTooltip: '이 쌍 삭제',
+  deleteNodeButton: '항목 삭제',
+  deleteNodeConfirm: '이 항목과 모든 하위 항목({count}개)을 삭제하시겠습니까?',
+  saveChangesButton: '암호화 저장',
+  savedIndicator: '암호화 저장됨',
+  savingIndicator: '저장 중...',
+  unsavedChanges: '저장되지 않은 변경사항',
+
+  // Settings Modal
+  settingsTitle: '금고 및 보안 설정',
+  languageLabel: '언어 (Language)',
+  languageKo: '한국어',
+  languageEn: 'English',
+  changePasswordTitle: '마스터 비밀번호 변경',
+  currentPasswordLabel: '현재 마스터 비밀번호',
+  changePasswordButton: '비밀번호 변경',
+  passwordChangedSuccess: '마스터 비밀번호가 안전하게 변경되었습니다.',
+  vaultLocationLabel: '암호화 금고 파일 위치',
+  encryptionSpecLabel: '암호화 규격',
+  encryptionSpecValue: 'AES-256-GCM + scrypt (N=16384, Dual-Key Envelope)',
+  closeButton: '닫기',
+  capsLockWarning: 'Caps Lock이 켜져 있습니다.',
+  clearSearch: '검색어 지우기',
+  expandAll: '모두 펼치기',
+  collapseAll: '모두 접기',
+  deleteNodeConfirmSingle: '"{title}" 항목을 삭제하시겠습니까?',
+  unsavedChangesConfirm: '저장되지 않은 변경사항이 있습니다. 저장하지 않고 이동하시겠습니까?',
+  saveFailedError: '암호화 저장에 실패했습니다.',
+  autoLockLabel: '미사용 시 자동 잠금',
+  autoLockOff: '사용 안 함',
+  autoLockMinutes: '{minutes}분',
+  copiedClipboardNotice: '복사됨 (30초 후 자동 삭제)',
+  dragDropOrPasteHint: '이미지를 여기로 끌어다 놓거나 Ctrl+V로 붙여넣으세요',
+} as const;
+
+export type TranslationKey = keyof typeof ko;

@@ -1,0 +1,111 @@
+import type { TranslationKey } from './ko.ts';
+
+export const en: Record<TranslationKey, string> = {
+  appName: 'pw-manager',
+  appSubtitle: 'Encrypted Multi-Level Tree Password & Key-Value Vault',
+  loading: 'Checking vault status...',
+
+  // Setup View
+  setupTitle: 'Set Master Password',
+  setupDescription:
+    'All data is strongly encrypted using your master password as the seed with scrypt and AES-256-GCM.',
+  masterPasswordLabel: 'Master Password',
+  masterPasswordPlaceholder: 'At least 8 characters',
+  confirmPasswordLabel: 'Confirm Master Password',
+  confirmPasswordPlaceholder: 'Re-enter master password',
+  setupButton: 'Create Encrypted Vault',
+  passwordMismatchError: 'Passwords do not match.',
+  passwordTooShortError: 'Master password must be at least {min} characters.',
+
+  // Recovery Phrase Modal
+  recoveryIssuedTitle: 'Save Your Recovery Phrase Safely',
+  recoveryIssuedWarning:
+    'This is the ONLY way to recover your data if you forget your master password. If you lose both, your data will be permanently inaccessible.',
+  recoveryPhraseLabel: '12-Word Recovery Phrase',
+  copyRecoveryPhrase: 'Copy Recovery Phrase',
+  copiedToast: 'Copied to clipboard',
+  recoveryConfirmCheckbox: 'I confirm that I have written down and safely stored my recovery phrase.',
+  recoveryContinueButton: 'Confirmed, Enter Vault',
+
+  // Login View
+  loginTitle: 'Unlock Vault',
+  loginDescription: 'Enter your master password to view your encrypted tree and key-value pairs.',
+  unlockButton: 'Unlock',
+  unlockFailedError: 'Invalid master password or corrupted vault.',
+  forgotPasswordLink: 'Forgot password? Recover with phrase',
+
+  // Recovery View
+  recoveryTitle: 'Recover Vault with Phrase',
+  recoveryDescription:
+    'Enter the 12-word recovery phrase issued during setup and choose a new master password.',
+  recoveryInputLabel: 'Recovery Phrase (12 words)',
+  recoveryInputPlaceholder: 'e.g. acorn agent agile ...',
+  newMasterPasswordLabel: 'New Master Password',
+  regeneratePhraseCheckbox: 'Generate a new recovery phrase after recovery',
+  recoverButton: 'Recover Vault & Reset Password',
+  backToLogin: 'Back to Login',
+  recoveryFailedError: 'Invalid recovery phrase. Please check your words and try again.',
+
+  // Main Vault Workspace
+  searchPlaceholder: 'Search titles, notes, keys...',
+  addRootNode: 'New Root Item',
+  addChildNode: 'Add Child Item',
+  lockVault: 'Lock Vault',
+  settings: 'Settings',
+  emptyTreeTitle: 'No items yet',
+  emptyTreeDescription: 'Click the + button on the top left to add your first folder or service entry.',
+  selectNodePrompt: 'Select an item from the tree or create a new one.',
+  statsSummary: '{nodes} items · {pairs} pairs',
+
+  // Node Detail
+  titleLabel: 'Title / Service Name',
+  titlePlaceholder: 'e.g. GitHub, Discord, Production Server',
+  descriptionLabel: 'Notes / Description',
+  descriptionPlaceholder: 'Add context or usage notes for this entry',
+  imageSectionTitle: 'Visual Identifier Image / Icon',
+  uploadImageButton: 'Upload Image',
+  removeImageButton: 'Remove Image',
+  presetIconsLabel: 'Built-in Icon Presets',
+  imageTooLargeError: 'Image is too large. Please choose a smaller image.',
+  pairsSectionTitle: 'Key - Value Pairs',
+  addPairButton: 'Add Key-Value',
+  keyPlaceholder: 'Key (e.g. ID, Password, Token)',
+  valuePlaceholder: 'Value',
+  secretToggleTooltip: 'Toggle secret masking',
+  revealValueTooltip: 'Show / Hide value',
+  copyValueTooltip: 'Copy (auto-clears clipboard in 30s)',
+  generatePasswordTooltip: 'Generate strong random password',
+  deletePairTooltip: 'Delete this pair',
+  deleteNodeButton: 'Delete Item',
+  deleteNodeConfirm: 'Delete this item and all {count} child items?',
+  saveChangesButton: 'Save Encrypted',
+  savedIndicator: 'Saved & Encrypted',
+  savingIndicator: 'Saving...',
+  unsavedChanges: 'Unsaved changes',
+
+  // Settings Modal
+  settingsTitle: 'Vault & Security Settings',
+  languageLabel: 'Language',
+  languageKo: '한국어',
+  languageEn: 'English',
+  changePasswordTitle: 'Change Master Password',
+  currentPasswordLabel: 'Current Master Password',
+  changePasswordButton: 'Update Password',
+  passwordChangedSuccess: 'Master password updated securely.',
+  vaultLocationLabel: 'Encrypted Vault File Path',
+  encryptionSpecLabel: 'Encryption Standard',
+  encryptionSpecValue: 'AES-256-GCM + scrypt (N=16384, Dual-Key Envelope)',
+  closeButton: 'Close',
+  capsLockWarning: 'Caps Lock is on.',
+  clearSearch: 'Clear search',
+  expandAll: 'Expand all',
+  collapseAll: 'Collapse all',
+  deleteNodeConfirmSingle: 'Delete "{title}"?',
+  unsavedChangesConfirm: 'You have unsaved changes. Discard them and switch?',
+  saveFailedError: 'Failed to save encrypted vault.',
+  autoLockLabel: 'Auto-lock on inactivity',
+  autoLockOff: 'Off',
+  autoLockMinutes: '{minutes} min',
+  copiedClipboardNotice: 'Copied! Auto-clears in 30s',
+  dragDropOrPasteHint: 'Drag & drop an image here, or press Ctrl+V to paste',
+};

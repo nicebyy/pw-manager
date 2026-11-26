@@ -1,0 +1,38 @@
+/**
+ * 256 unambiguous English words (8 bits of entropy per word) for recovery phrase generation.
+ * Words are short, distinct, lowercase, and easy to transcribe without homophone confusion.
+ */
+export const RECOVERY_WORDLIST: readonly string[] = [
+  'acorn', 'actor', 'adobe', 'agent', 'agile', 'alarm', 'album', 'alert',
+  'algae', 'alien', 'alley', 'alloy', 'almond', 'alpha', 'alpine', 'amber',
+  'ample', 'anchor', 'angel', 'angle', 'ankle', 'apple', 'apron', 'arbor',
+  'arena', 'argon', 'armor', 'aroma', 'arrow', 'asset', 'atlas', 'atom',
+  'attic', 'audio', 'audit', 'aurora', 'author', 'autumn', 'avenue', 'award',
+  'axiom', 'azure', 'bacon', 'badge', 'badger', 'bagel', 'baker', 'bamboo',
+  'banana', 'banjo', 'banner', 'banyan', 'barrel', 'basalt', 'basket', 'beacon',
+  'beaver', 'beetle', 'belfry', 'berry', 'bevel', 'beyond', 'bison', 'blade',
+  'blazer', 'bloom', 'blossom', 'bluff', 'board', 'bobcat', 'boiler', 'bonnet',
+  'border', 'boulder', 'bounce', 'branch', 'brass', 'brave', 'breeze', 'brick',
+  'bridge', 'bright', 'bronze', 'brook', 'browse', 'brush', 'bubble', 'bucket',
+  'budget', 'buffalo', 'bugle', 'builder', 'bullet', 'bundle', 'bunker', 'burden',
+  'burger', 'burner', 'burrow', 'butter', 'button', 'cabin', 'cable', 'cactus',
+  'cadet', 'cairn', 'camel', 'camera', 'campus', 'canal', 'canary', 'candle',
+  'canyon', 'canvas', 'caper', 'carbon', 'cargo', 'carpet', 'carrot', 'carton',
+  'carver', 'castle', 'casual', 'cedar', 'cellar', 'cement', 'census', 'center',
+  'chalk', 'champ', 'chance', 'change', 'chapel', 'charge', 'charm', 'chart',
+  'chase', 'cherry', 'chess', 'chest', 'chime', 'chip', 'choice', 'chord',
+  'chorus', 'cider', 'cinder', 'circle', 'citadel', 'citrus', 'civic', 'claim',
+  'clamp', 'clang', 'clasp', 'classic', 'cliff', 'climate', 'climb', 'clinic',
+  'cloak', 'clock', 'cloud', 'clover', 'clown', 'cluster', 'coach', 'coast',
+  'cobalt', 'cobra', 'cocoa', 'coffee', 'cohort', 'collar', 'colony', 'column',
+  'combat', 'comet', 'comic', 'comma', 'common', 'compass', 'comply', 'condor',
+  'cone', 'copper', 'coral', 'corner', 'cosmos', 'cotton', 'cougar', 'council',
+  'county', 'couple', 'course', 'cover', 'cowboy', 'coyote', 'craft', 'crane',
+  'crater', 'crayon', 'cream', 'credit', 'creek', 'crest', 'cricket', 'crimson',
+  'crisp', 'critic', 'crocus', 'crop', 'cross', 'crown', 'cruise', 'crumb',
+  'crust', 'crystal', 'cubby', 'cube', 'cuckoo', 'cupid', 'curfew', 'curtain',
+  'curve', 'custom', 'cycle', 'cyclone', 'cypress', 'dagger', 'dahlia', 'daily',
+  'dairy', 'daisy', 'dance', 'dapper', 'daring', 'dart', 'dawn', 'daybreak',
+  'decade', 'decent', 'decor', 'decoy', 'deep', 'deer', 'delta', 'deluxe',
+  'denim', 'depot', 'depth', 'desert', 'design', 'desk', 'detail', 'device',
+] as const;
