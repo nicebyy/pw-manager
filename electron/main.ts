@@ -1,4 +1,12 @@
-import { app, BrowserWindow, clipboard, ipcMain } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  clipboard,
+  ipcMain,
+  Menu,
+  nativeImage,
+  Tray,
+} from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { enforceSingleInstance } from './singleInstance.js';
@@ -13,6 +21,8 @@ import type { VaultData } from '../src/types/vault.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 let mainWindow: BrowserWindow | null = null;
+let tray: Tray | null = null;
+let isQuitting = false;
 let vaultStore: VaultFileStore | null = null;
 let clipboardClearTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -21,6 +31,63 @@ function clearClipboardTimer(): void {
     clearTimeout(clipboardClearTimer);
     clipboardClearTimer = null;
   }
+}
+
+function getAppIcon() {
+  const iconPath = path.join(__dirname, '../../assets/icon.png');
+  return nativeImage.createFromPath(iconPath);
+}
+
+function showAndFocusWindow(): void {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    mainWindow = createMainWindow();
+  }
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore();
+  }
+  mainWindow.show();
+  mainWindow.focus();
+}
+
+function createSystemTray(): void {
+  if (tray) return;
+  const appIcon = getAppIcon();
+  const trayIcon = appIcon.isEmpty()
+    ? nativeImage.createEmpty()
+    : appIcon.resize({ width: 16, height: 16 });
+
+  tray = new Tray(trayIcon);
+  tray.setToolTip(APP_NAME);
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: `${APP_NAME} 열기`,
+      click: () => showAndFocusWindow(),
+    },
+    {
+      label: '금고 잠금',
+      click: () => {
+        if (vaultStore) {
+          vaultStore.lock();
+        }
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.reload();
+        }
+      },
+    },
+    { type: 'separator' },
+    {
+      label: '종료',
+      click: () => {
+        isQuitting = true;
+        app.quit();
+      },
+    },
+  ]);
+
+  tray.setContextMenu(contextMenu);
+  tray.on('click', () => showAndFocusWindow());
+  tray.on('double-click', () => showAndFocusWindow());
 }
 
 function getVaultStore(): VaultFileStore {
@@ -33,12 +100,14 @@ function getVaultStore(): VaultFileStore {
 
 function createMainWindow(): BrowserWindow {
   const preloadPath = path.join(__dirname, 'preload.cjs');
+  const appIcon = getAppIcon();
   const win = new BrowserWindow({
     width: 1180,
     height: 760,
     minWidth: 880,
     minHeight: 600,
     title: APP_NAME,
+    icon: appIcon.isEmpty() ? undefined : appIcon,
     backgroundColor: '#020617',
     autoHideMenuBar: true,
     webPreferences: {
@@ -63,6 +132,13 @@ function createMainWindow(): BrowserWindow {
   } else {
     win.loadFile(path.join(__dirname, '../../dist/index.html'));
   }
+
+  win.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault();
+      win.hide();
+    }
+  });
 
   win.on('closed', () => {
     if (mainWindow === win) {
@@ -148,23 +224,27 @@ if (isPrimaryInstance) {
   app.whenReady().then(() => {
     registerIpcHandlers();
     mainWindow = createMainWindow();
+    createSystemTray();
 
     app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) {
-        mainWindow = createMainWindow();
-      }
+      showAndFocusWindow();
     });
   });
 
   app.on('before-quit', () => {
+    isQuitting = true;
     clearClipboardTimer();
+    if (tray) {
+      tray.destroy();
+      tray = null;
+    }
     if (vaultStore) {
       vaultStore.lock();
     }
   });
 
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+    if (isQuitting && process.platform !== 'darwin') {
       app.quit();
     }
   });

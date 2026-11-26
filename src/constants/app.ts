@@ -26,4 +26,5 @@ export const SECURITY_DEFAULTS = {
 export const UI_DEFAULTS = {
   DEFAULT_LANGUAGE: 'ko',
   SIDEBAR_WIDTH_PX: 320,
+  AUTO_SAVE_DEBOUNCE_MS: 600,
 } as const;

@@ -253,12 +253,6 @@ export const useVaultStore = create<VaultStoreState>((set, get) => ({
   },
 
   selectNode: (nodeId) => {
-    const { isDirty, selectedNodeId, t } = get();
-    if (isDirty && nodeId !== selectedNodeId) {
-      if (!window.confirm(t('unsavedChangesConfirm'))) {
-        return;
-      }
-    }
     set({ selectedNodeId: nodeId, isDirty: false });
   },
 
@@ -279,12 +273,8 @@ export const useVaultStore = create<VaultStoreState>((set, get) => ({
   collapseAll: () => set({ expandedNodeIds: {} }),
 
   addNode: async (parentId, title, image) => {
-    const { vaultData, expandedNodeIds, isDirty, t } = get();
+    const { vaultData, expandedNodeIds, t } = get();
     if (!vaultData) return null;
-
-    if (isDirty && !window.confirm(t('unsavedChangesConfirm'))) {
-      return null;
-    }
 
     const newNode = createVaultNode({
       parentId,

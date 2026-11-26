@@ -16,6 +16,7 @@ import {
   Wand2,
   X,
 } from 'lucide-react';
+import { UI_DEFAULTS } from '../constants/app.ts';
 import { SERVICE_ICON_PRESETS } from '../constants/presets.ts';
 import { generateStrongPassword } from '../core/passwordGenerator.ts';
 import {
@@ -58,10 +59,43 @@ export function NodeDetail() {
   const [isDraggingImage, setIsDraggingImage] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingDraftRef = useRef<{
+    nodeId: string;
+    fallbackTitle: string;
+    title: string;
+    description: string;
+    image: NodeImage | undefined;
+    pairs: KeyValuePair[];
+    dirty: boolean;
+  } | null>(null);
+
+  const clearAutoSaveTimer = () => {
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+      autoSaveTimerRef.current = null;
+    }
+  };
 
   const setIsDirty = (dirty: boolean) => {
     setDirty(dirty);
   };
+
+  useEffect(() => {
+    if (node) {
+      pendingDraftRef.current = {
+        nodeId: node.id,
+        fallbackTitle: node.title,
+        title,
+        description,
+        image,
+        pairs,
+        dirty: isDirty,
+      };
+    } else {
+      pendingDraftRef.current = null;
+    }
+  }, [node?.id, title, description, image, pairs, isDirty]);
 
   useEffect(() => {
     if (node) {
@@ -74,10 +108,43 @@ export function NodeDetail() {
       setIsDraggingImage(false);
       setDirty(false);
     }
+
+    return () => {
+      clearAutoSaveTimer();
+      const pending = pendingDraftRef.current;
+      if (pending && pending.dirty) {
+        pending.dirty = false;
+        void updateNode(pending.nodeId, {
+          title: pending.title.trim() || pending.fallbackTitle,
+          description: pending.description.trim() || undefined,
+          image: pending.image,
+          pairs: pending.pairs,
+        });
+      }
+    };
   }, [node?.id]);
+
+  useEffect(() => {
+    if (!node || !isDirty) return;
+    clearAutoSaveTimer();
+    autoSaveTimerRef.current = setTimeout(() => {
+      autoSaveTimerRef.current = null;
+      void updateNode(node.id, {
+        title: title.trim() || node.title,
+        description: description.trim() || undefined,
+        image,
+        pairs,
+      });
+    }, UI_DEFAULTS.AUTO_SAVE_DEBOUNCE_MS);
+
+    return () => {
+      clearAutoSaveTimer();
+    };
+  }, [node?.id, title, description, image, pairs, isDirty]);
 
   const handleSave = async () => {
     if (!node) return;
+    clearAutoSaveTimer();
     await updateNode(node.id, {
       title: title.trim() || node.title,
       description: description.trim() || undefined,
