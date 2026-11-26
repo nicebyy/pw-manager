@@ -106,6 +106,8 @@ export const ko = {
   autoLockMinutes: '{minutes}분',
   copiedClipboardNotice: '복사됨 (30초 후 자동 삭제)',
   dragDropOrPasteHint: '이미지를 여기로 끌어다 놓거나 Ctrl+V로 붙여넣으세요',
+  confirmDeleteButton: '삭제 확인',
+  cancelButton: '취소',
 } as const;
 
 export type TranslationKey = keyof typeof ko;

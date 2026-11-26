@@ -108,4 +108,6 @@ export const en: Record<TranslationKey, string> = {
   autoLockMinutes: '{minutes} min',
   copiedClipboardNotice: 'Copied! Auto-clears in 30s',
   dragDropOrPasteHint: 'Drag & drop an image here, or press Ctrl+V to paste',
+  confirmDeleteButton: 'Confirm Delete',
+  cancelButton: 'Cancel',
 };

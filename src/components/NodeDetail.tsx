@@ -42,6 +42,8 @@ export function NodeDetail() {
   const errorMessage = useVaultStore((s) => s.errorMessage);
   const isDirty = useVaultStore((s) => s.isDirty);
   const setDirty = useVaultStore((s) => s.setDirty);
+  const justCreatedNodeId = useVaultStore((s) => s.justCreatedNodeId);
+  const clearJustCreatedNodeId = useVaultStore((s) => s.clearJustCreatedNodeId);
   const t = useVaultStore((s) => s.t);
 
   const node =
@@ -57,8 +59,10 @@ export function NodeDetail() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
   const [isDraggingImage, setIsDraggingImage] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const titleInputRef = useRef<HTMLInputElement | null>(null);
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingDraftRef = useRef<{
     nodeId: string;
@@ -106,7 +110,16 @@ export function NodeDetail() {
       setRevealedIds({});
       setImageError(null);
       setIsDraggingImage(false);
+      setConfirmDelete(false);
       setDirty(false);
+
+      if (justCreatedNodeId === node.id) {
+        clearJustCreatedNodeId();
+        requestAnimationFrame(() => {
+          titleInputRef.current?.focus();
+          titleInputRef.current?.select();
+        });
+      }
     }
 
     return () => {
@@ -250,12 +263,7 @@ export function NodeDetail() {
   };
 
   const handleDeleteNode = async () => {
-    const childCount = countTreeStats(node.children).totalNodes;
-    const message =
-      childCount > 0
-        ? t('deleteNodeConfirm', { count: childCount })
-        : t('deleteNodeConfirmSingle', { title: node.title });
-    if (!window.confirm(message)) return;
+    setConfirmDelete(false);
     await deleteNode(node.id);
   };
 
@@ -331,7 +339,9 @@ export function NodeDetail() {
                   {t('titleLabel')}
                 </label>
                 <input
+                  ref={titleInputRef}
                   type="text"
+                  spellCheck={false}
                   value={title}
                   onChange={(e) => {
                     setTitle(e.target.value);
@@ -347,6 +357,7 @@ export function NodeDetail() {
                 </label>
                 <input
                   type="text"
+                  spellCheck={false}
                   value={description}
                   onChange={(e) => {
                     setDescription(e.target.value);
@@ -593,14 +604,40 @@ export function NodeDetail() {
             {t('addChildNode')}
           </button>
 
-          <button
-            type="button"
-            onClick={handleDeleteNode}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-rose-950/60 hover:bg-rose-900/70 border border-rose-900/60 text-rose-300 text-xs font-medium transition-colors"
-          >
-            <Trash2 className="w-4 h-4" />
-            {t('deleteNodeButton')}
-          </button>
+          {confirmDelete ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-rose-300">
+                {countTreeStats(node.children).totalNodes > 0
+                  ? t('deleteNodeConfirm', {
+                      count: countTreeStats(node.children).totalNodes,
+                    })
+                  : t('deleteNodeConfirmSingle', { title: node.title })}
+              </span>
+              <button
+                type="button"
+                onClick={handleDeleteNode}
+                className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition-colors"
+              >
+                {t('confirmDeleteButton')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(false)}
+                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors"
+              >
+                {t('cancelButton')}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setConfirmDelete(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-rose-950/60 hover:bg-rose-900/70 border border-rose-900/60 text-rose-300 text-xs font-medium transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+              {t('deleteNodeButton')}
+            </button>
+          )}
         </div>
       </div>
     </div>

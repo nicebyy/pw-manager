@@ -63,6 +63,7 @@ export interface VaultStoreState {
   status: VaultStatusInfo;
   vaultData: VaultData | null;
   selectedNodeId: string | null;
+  justCreatedNodeId: string | null;
   expandedNodeIds: Record<string, boolean>;
   searchQuery: string;
   language: Language;
@@ -77,6 +78,7 @@ export interface VaultStoreState {
   setAutoLockMinutes: (minutes: number) => void;
   setSearchQuery: (query: string) => void;
   setDirty: (dirty: boolean) => void;
+  clearJustCreatedNodeId: () => void;
   clearError: () => void;
 
   refreshStatus: () => Promise<void>;
@@ -136,6 +138,7 @@ export const useVaultStore = create<VaultStoreState>((set, get) => ({
   status: { state: 'locked', vaultPath: '' },
   vaultData: null,
   selectedNodeId: null,
+  justCreatedNodeId: null,
   expandedNodeIds: {},
   searchQuery: '',
   language: loadSavedLanguage(),
@@ -168,6 +171,8 @@ export const useVaultStore = create<VaultStoreState>((set, get) => ({
   setSearchQuery: (query) => set({ searchQuery: query }),
 
   setDirty: (dirty) => set({ isDirty: dirty }),
+
+  clearJustCreatedNodeId: () => set({ justCreatedNodeId: null }),
 
   clearError: () => set({ errorMessage: null }),
 
@@ -299,6 +304,7 @@ export const useVaultStore = create<VaultStoreState>((set, get) => ({
     set({
       vaultData: nextVault,
       selectedNodeId: newNode.id,
+      justCreatedNodeId: newNode.id,
       expandedNodeIds: nextExpanded,
       isDirty: false,
       saveState: 'saving',
