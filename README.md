@@ -43,3 +43,10 @@ npm run build
 # Electron 데스크톱 앱 개발 모드 실행
 npm run dev:electron
 ```
+
+## 자동 릴리스 파이프라인 (GitHub Actions)
+
+`main` 브랜치에 푸시될 때마다 [`.github/workflows/release.yml`](.github/workflows/release.yml) 워크플로우가 자동 실행됩니다:
+1. **Test & Build Gate**: `npm test` (단위·통합 테스트 100% 통과) 및 `npm run build` 검증
+2. **Release Packaging**: Windows NSIS 설치 파일 및 Portable `.exe` 빌드 + `checksums.txt` (SHA256) 생성
+3. **GitHub Release 게시**: SemVer 태그(`v1.0.0` 등, 기존 태그 존재 시 패치 버전 자동 증가)와 함께 GitHub Releases에 자동 업로드

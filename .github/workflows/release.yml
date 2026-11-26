@@ -1,0 +1,133 @@
+name: Release Desktop App
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test-and-build:
+    name: Test & Build Gate
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Unit & Integration Tests
+        run: npm test
+
+      - name: Verify Production Build
+        run: npm run build
+
+  release:
+    name: Build & Publish Release
+    needs: test-and-build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code with Full History
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Determine Release Tag and Version
+        id: vars
+        shell: pwsh
+        run: |
+          git fetch --tags
+          $pkg = Get-Content -Raw -Path package.json | ConvertFrom-Json
+          $baseVer = "v" + $pkg.version
+          $tagExists = git tag -l $baseVer
+
+          if ($tagExists) {
+            $allTags = git tag -l
+            $semverTags = $allTags | Where-Object { $_ -match '^v\d+\.\d+\.\d+$' }
+            $parts = $pkg.version.Split('.')
+            $major = [int]$parts[0]
+            $minor = [int]$parts[1]
+            $matchingPatches = $semverTags | Where-Object { $_ -match "^v$major\.$minor\.(\d+)$" } | ForEach-Object { [int]$Matches[1] }
+            $maxPatch = ($matchingPatches | Measure-Object -Maximum).Maximum
+            $nextPatch = $maxPatch + 1
+            $newVer = "$major.$minor.$nextPatch"
+            $relTag = "v$newVer"
+
+            Write-Host "Tag $baseVer already exists. Auto-incremented to $relTag"
+            $pkg.version = $newVer
+            $pkg | ConvertTo-Json -Depth 10 | Set-Content -Path package.json -Encoding utf8
+
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add package.json
+            git commit -m "chore(release): auto-bump version to $newVer [skip ci]"
+            git push origin main
+          } else {
+            $relTag = $baseVer
+            $newVer = $pkg.version
+            Write-Host "Using target version tag: $relTag"
+          }
+
+          "release_tag=$relTag" >> $env:GITHUB_OUTPUT
+          "version=$newVer" >> $env:GITHUB_OUTPUT
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Package Windows Installer & Portable Binary
+        run: npx electron-builder --win nsis portable --publish never
+
+      - name: Generate SHA256 Checksums
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path release -Filter "*.exe" | ForEach-Object {
+            $hash = (Get-FileHash -Path $_.FullName -Algorithm SHA256).Hash
+            "$hash  $($_.Name)" | Out-File -FilePath release/checksums.txt -Append -Encoding utf8
+          }
+          Get-Content release/checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.release_tag }}
+          name: "pw-manager ${{ steps.vars.outputs.release_tag }}"
+          body: |
+            ## 🔐 pw-manager ${{ steps.vars.outputs.release_tag }}
+
+            다단계 트리 구조 + 직관적 이미지 식별 + `scrypt` & `AES-256-GCM` 암호화를 지원하는 데스크톱 금고 릴리스입니다.
+
+            ### 📦 배포 파일 안내
+            - **설치형 (NSIS Installer)**: `pw-manager Setup *.exe`
+            - **무설치형 (Portable)**: `pw-manager *.exe`
+
+            ### 🛡️ 무결성 검증 (SHA256 Checksums)
+            하단의 `checksums.txt`에서 각 실행 파일의 SHA256 해시값을 확인할 수 있습니다.
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          make_latest: true
+          files: |
+            release/*.exe
+            release/*.blockmap
+            release/checksums.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
