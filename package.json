@@ -1,7 +1,7 @@
 {
   "name": "pw-manager",
   "productName": "pw-manager",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "pw-manager - Encrypted Multi-Level Tree Password & Key-Value Desktop Vault",
   "main": "dist-electron/electron/main.js",
   "type": "module",
